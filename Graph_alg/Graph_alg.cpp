@@ -1,51 +1,55 @@
 ﻿#include <iostream>
-#include <fstream>
 #include <string>
 using namespace std;
 
-bool is_int(const string& s) {
-	return s.find_first_not_of("0123456789") == string::npos;
-}
-
-int* array_from_string(string s, int n) {
-	int* arr = new int[n];
-	int wall = 0;
-	int ind = 0;
-	for (int i = 0; i < s.length() - 1; i++) {
-		if (s[i] == ' ') {
-			if (!is_int(s.substr(wall, i - wall)))
-				arr[ind++] = 0;
-			else
-				arr[ind++] = stoi(s.substr(wall, i - wall));
-			wall = i;
+class Graph {
+private:
+	int n;
+	int** mat;
+public:
+	Graph(int n) {
+		this->n = n;
+		int** mat = new int* [n];
+		for (int i = 0; i < n; i++) mat[i] = new int[n];
+		for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) mat[i][j] = 0;
+		this->mat = mat;
+	}
+	~Graph() {
+		for (int i = 0; i < n; i++) delete[] mat[i];
+		delete[] mat;
+	}
+	void enter_elem() {
+		cout << "\nEnter matrix of dist:\t\t(use space between elements and use only numbers)\nPlease note that you are entering the mirror part of the matrix along the main diagonal\n\n";
+		for (int i = 0; i < this->n; i++) {
+			string space(i * 2, ' ');
+			cout << i + 1 << " vertex distances (" << n - i <<" values):" + space;
+			for (int j = i; j < n; j++) {
+				cin >> this->mat[i][j];
+				this->mat[j][i] = mat[i][j];
+			}
 		}
 	}
-	return arr;
-}
+	void print_mat() {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++)
+				cout << this->mat[i][j] << ' ';
+			cout << endl;
+		}
+	}
+	void prim_kras() {
+	}
 
-void prim_kras() {
+};
+
+
+int main() {
+	cout << "Welcome.\n\n";
+
 	int n;
 	cout << "Enter number of vertex: ";
 	cin >> n;
 
-	int** distmat = new int* [n];
-	for (int i = 0; i < n; i++) distmat[i] = new int[n];
-	for (int i = 0; i < n; i++)for (int j = 0; j < n; j++) distmat[i][j] = 0;
-
-	cout << "Enter matrix of dist:\n";
-	string s;
-	for (int i = 0; i < n; i++) {
-		cin >> s;
-		distmat[i] = array_from_string(s, n);
-	}
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++)
-			cout << distmat[i][j] << ' ';
-		cout << endl;
-	}
-}
-
-int main() {
-	cout << "Welcome.\n\n";
-	prim_kras();
+	Graph graph(n);
+	graph.enter_elem();
+	graph.print_mat();
 }
